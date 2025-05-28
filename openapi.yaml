@@ -1,0 +1,336 @@
+openapi: 3.0.3
+info:
+  title: Üniversite Kütüphane Sistemi API
+  description: Kitap, öğrenci ve ödünç işlemlerini yöneten RESTful API.
+  version: 1.0.0
+servers:
+- url: https://api.universite-kutuphane.com/v1
+tags:
+- name: books
+  description: Kitap işlemleri
+- name: students
+  description: Öğrenci işlemleri
+- name: loans
+  description: Kitap ödünç işlemleri
+paths:
+  /books:
+    get:
+      tags:
+      - books
+      summary: Tüm kitapları getir
+      parameters:
+      - name: page
+        in: query
+        schema:
+          type: integer
+      - name: size
+        in: query
+        schema:
+          type: integer
+      responses:
+        '200':
+          description: Kitap listesi
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Book'
+    post:
+      tags:
+      - books
+      summary: Yeni kitap ekle
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Book'
+            example:
+              id: 123e4567-e89b-12d3-a456-426614174000
+              title: Yapay Zeka
+              author: Ahmet Yılmaz
+              isbn: 978-3-16-148410-0
+              publisher: Bilim Yayınları
+              pageCount: 300
+              stock: 5
+      responses:
+        '201':
+          description: Başarıyla oluşturuldu
+        '400':
+          description: Geçersiz veri
+        '500':
+          description: Sunucu hatası
+  /books/{id}:
+    get:
+      tags:
+      - books
+      summary: Belirli kitabı getir
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Kitap bilgisi
+        '404':
+          description: Kitap bulunamadı
+    put:
+      tags:
+      - books
+      summary: Kitabı güncelle
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Book'
+      responses:
+        '200':
+          description: Güncellendi
+        '400':
+          description: Geçersiz veri
+    delete:
+      tags:
+      - books
+      summary: Kitabı sil
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '204':
+          description: Silindi
+        '404':
+          description: Bulunamadı
+  /students:
+    get:
+      tags:
+      - students
+      summary: Tüm öğrencileri getir
+      responses:
+        '200':
+          description: Öğrenci listesi
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Student'
+    post:
+      tags:
+      - students
+      summary: Yeni öğrenci ekle
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Student'
+      responses:
+        '201':
+          description: Öğrenci eklendi
+        '400':
+          description: Geçersiz veri
+  /students/{id}:
+    get:
+      tags:
+      - students
+      summary: Öğrenci bilgisi getir
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Öğrenci bilgisi
+        '404':
+          description: Bulunamadı
+    put:
+      tags:
+      - students
+      summary: Öğrenci güncelle
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Student'
+      responses:
+        '200':
+          description: Güncellendi
+        '400':
+          description: Geçersiz veri
+    delete:
+      tags:
+      - students
+      summary: Öğrenciyi sil
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '204':
+          description: Silindi
+        '404':
+          description: Bulunamadı
+  /loans:
+    get:
+      tags:
+      - loans
+      summary: Tüm ödünçleri getir
+      responses:
+        '200':
+          description: Ödünç listesi
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Loan'
+    post:
+      tags:
+      - loans
+      summary: Kitap ödünç al
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Loan'
+      responses:
+        '201':
+          description: Ödünç verildi
+        '400':
+          description: Geçersiz istek
+  /loans/{id}:
+    get:
+      tags:
+      - loans
+      summary: Ödünç detayını getir
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Detay
+        '404':
+          description: Bulunamadı
+  /loans/{id}/return:
+    patch:
+      tags:
+      - loans
+      summary: Kitabı iade et
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: İade edildi
+        '400':
+          description: Geçersiz istek
+components:
+  schemas:
+    Book:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        title:
+          type: string
+        author:
+          type: string
+        isbn:
+          type: string
+          pattern: ^978-[0-9\-]{10,}$
+        publisher:
+          type: string
+        pageCount:
+          type: integer
+        stock:
+          type: integer
+      required:
+      - id
+      - title
+      - author
+      - isbn
+      - publisher
+      - pageCount
+      - stock
+    Student:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        name:
+          type: string
+        studentNumber:
+          type: string
+        email:
+          type: string
+          format: email
+        isActive:
+          type: boolean
+      required:
+      - id
+      - name
+      - studentNumber
+      - email
+      - isActive
+    Loan:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        studentId:
+          type: string
+        bookId:
+          type: string
+        loanDate:
+          type: string
+          format: date
+        returnDate:
+          type: string
+          format: date
+          nullable: true
+        status:
+          type: string
+          enum:
+          - ongoing
+          - returned
+          - late
+      required:
+      - id
+      - studentId
+      - bookId
+      - loanDate
+      - status
