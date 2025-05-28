@@ -1,8 +1,8 @@
 # OpenAPI Tasarımı Ödevi Teslim Raporu
 
 ## 👤 Öğrenci Bilgileri
-- **Ad Soyad**: [Adınızı Yazınız]
-- **Öğrenci Numarası**: [Numaranızı Yazınız]
+- **Ad Soyad**: Muhammed Emin Solakoğlu
+- **Öğrenci Numarası**: 170422053
 
 ---
 
@@ -11,8 +11,7 @@
 - OpenAPI dosyası bu repoda `openapi.yaml` olarak yer almaktadır.
 
 ### 🔗 GitHub Repo Linki
-[GitHub projenizin linkini buraya yapıştırınız]
-
+https://github.com/Eminsolakoglu/OpenAPI-ile-REST-API-Tasar-m-.git
 ---
 
 ## 📝 API Açıklaması
